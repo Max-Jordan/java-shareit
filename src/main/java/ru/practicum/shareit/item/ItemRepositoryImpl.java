@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class ItemRepositoryImpl implements ItemRepository {
 
     private final HashMap<Long, Item> itemStore;
-    private Long id = 0l;
+    private Long id = 0L;
 
     @Override
     public Item saveItem(Item item) {
@@ -36,13 +36,13 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public List<Item> getItemBySearch(String name) {
-        if(StringUtils.isEmpty(name)) {
+        if (StringUtils.isEmpty(name)) {
             return Collections.emptyList();
         }
         return itemStore.values().stream()
                 .filter(x -> BooleanUtils.isTrue(x.getAvailable()) && (
                         x.getName().toLowerCase().contains(name.toLowerCase()) ||
-                        x.getDescription().toLowerCase().contains(name.toLowerCase())))
+                                x.getDescription().toLowerCase().contains(name.toLowerCase())))
                 .collect(Collectors.toList());
     }
 }

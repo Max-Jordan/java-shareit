@@ -12,6 +12,7 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,18 +51,19 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto editItem(Long ownerId, Long itemId, Item item) {
+        log.info("A request was received to edit item with id " + itemId);
         Item updateItem = itemRepository.getItem(itemId)
                 .orElseThrow(() -> new NotFoundException("Item with id " + itemId + " not found"));
-        if(updateItem.getOwnerId() != ownerId) {
+        if (!Objects.equals(updateItem.getOwnerId(), ownerId)) {
             throw new NotFoundException("This item does not belong to this user");
         }
-        if(!StringUtils.isEmpty(item.getDescription())) {
+        if (!StringUtils.isEmpty(item.getDescription())) {
             updateItem.setDescription(item.getDescription());
         }
-        if(!StringUtils.isEmpty(item.getName())) {
+        if (!StringUtils.isEmpty(item.getName())) {
             updateItem.setName(item.getName());
         }
-        if(item.getAvailable() != null) {
+        if (item.getAvailable() != null) {
             updateItem.setAvailable(item.getAvailable());
         }
         userRepository.getUser(ownerId)
@@ -71,6 +73,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getItemBySearch(String name) {
+        log.info("A request was received to receive item by name or description");
         return itemRepository.getItemBySearch(name).stream()
                 .map(Mapper::itemMapper)
                 .collect(Collectors.toList());

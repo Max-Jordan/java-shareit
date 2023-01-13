@@ -10,7 +10,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     private final Map<Long, User> users = new HashMap<>();
 
-    private static Long id = 0L;
+    private Long id = 0L;
 
     @Override
     public User saveUser(User user) {

@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user;
 
 import lombok.*;
-import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 
 import javax.validation.constraints.Email;
