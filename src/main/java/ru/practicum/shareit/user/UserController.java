@@ -1,17 +1,16 @@
 package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
+@Validated
 public class UserController {
 
     private final UserService userService;
@@ -27,15 +26,12 @@ public class UserController {
     }
 
     @PostMapping
-    public User saveUser(
-            @Valid
-            @RequestBody User user) {
+    public User saveUser(@Valid @RequestBody User user) {
         return userService.saveUser(user);
     }
 
     @PatchMapping("/{userId}")
-    public User editUser(@PathVariable long userId,
-                         @RequestBody User user) {
+    public User editUser(@PathVariable long userId, @RequestBody User user) {
         return userService.editUser(userId, user);
     }
 

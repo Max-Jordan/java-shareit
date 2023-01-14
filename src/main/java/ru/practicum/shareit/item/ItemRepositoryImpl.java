@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemRepositoryImpl implements ItemRepository {
 
-    private final HashMap<Long, Item> itemStore;
+    private final Map<Long, Item> itemStore;
     private Long id = 0L;
 
     @Override
@@ -41,8 +41,8 @@ public class ItemRepositoryImpl implements ItemRepository {
         }
         return itemStore.values().stream()
                 .filter(x -> BooleanUtils.isTrue(x.getAvailable()) && (
-                        x.getName().toLowerCase().contains(name.toLowerCase()) ||
-                                x.getDescription().toLowerCase().contains(name.toLowerCase())))
+                        StringUtils.containsIgnoreCase(x.getName(), name) ||
+                                StringUtils.containsIgnoreCase(x.getDescription(), name)))
                 .collect(Collectors.toList());
     }
 }
