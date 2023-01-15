@@ -61,15 +61,9 @@ public class ItemServiceImpl implements ItemService {
         if (!Objects.equals(updateItem.getOwnerId(), ownerId)) {
             throw new NotFoundException("This item does not belong to this user");
         }
-        if (!StringUtils.isEmpty(item.getDescription())) {
-            updateItem.setDescription(item.getDescription());
-        }
-        if (!StringUtils.isEmpty(item.getName())) {
-            updateItem.setName(item.getName());
-        }
-        if (Optional.ofNullable(item.getAvailable()).isPresent()) {
-            updateItem.setAvailable(item.getAvailable());
-        }
+        Optional.ofNullable(item.getDescription()).ifPresent(updateItem::setDescription);
+        Optional.ofNullable(item.getName()).ifPresent(updateItem::setName);
+        Optional.ofNullable(item.getAvailable()).ifPresent(updateItem::setAvailable);
         User owner = userRepository.getUser(ownerId)
                 .orElseThrow(() -> new NotFoundException("Owner was not found"));
         userService.editItem(owner, updateItem);

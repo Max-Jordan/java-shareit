@@ -32,9 +32,7 @@ public class UserServiceImpl implements UserService {
         log.info("A request was received to edit user with id " + userId);
         User updateUser = userRepository.getUser(userId)
                 .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
-        if (Optional.ofNullable(user.getName()).isPresent()) {
-            updateUser.setName(user.getName());
-        }
+        Optional.ofNullable(user.getName()).ifPresent(updateUser::setName);
         if (Optional.ofNullable(user.getEmail()).isPresent()) {
             findUserByEmail(user);
             updateUser.setEmail(user.getEmail());
@@ -58,13 +56,13 @@ public class UserServiceImpl implements UserService {
     public User getUserById(long userId) {
         log.info("A request was received to receive user by id " + userId);
         return userRepository.getUser(userId)
-                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
+                .orElseThrow(() -> new NotFoundException("User with id " + userId + "was not found"));
     }
 
     @Override
     public List<Item> getItemsByUser(long ownerId) {
         return new ArrayList<>(userRepository.getUser(ownerId)
-                .orElseThrow(() -> new NotFoundException("User with id " + ownerId + "was not found"))
+                .orElseThrow(() -> new NotFoundException("User with id " + ownerId + " was not found"))
                 .getItems()
                 .values());
     }
