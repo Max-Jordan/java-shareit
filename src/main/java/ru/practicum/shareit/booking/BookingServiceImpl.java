@@ -40,7 +40,7 @@ public class BookingServiceImpl implements BookingService {
     public Booking findBookingById(Long bookingId, Long userId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("The booking with id " + bookingId + " not exist"));
-        if(!(Objects.equals(booking.getItem().getIdOwner(), userId) ||
+        if (!(Objects.equals(booking.getItem().getIdOwner(), userId) ||
                 Objects.equals(booking.getBooker().getId(), userId))) {
             throw new NotFoundException("Wrong user");
         }
@@ -54,7 +54,7 @@ public class BookingServiceImpl implements BookingService {
         if (!Objects.equals(userId, booking.getItem().getIdOwner())) {
             throw new NotFoundException("Only the owner of the item can confirm the booking");
         }
-        if(booking.getStatus().equals(IsApproved.APPROVED)) {
+        if (booking.getStatus().equals(IsApproved.APPROVED)) {
             throw new BookingException("The booking already approved");
         }
         if (isApproved) {

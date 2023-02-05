@@ -15,6 +15,7 @@ public class BookingMapper {
         booking.setEnd(dto.getEnd());
         return booking;
     }
+
     public static ShortBooking mapToShortBooking(Booking booking) {
         ShortBooking shortBooking = new ShortBooking();
         shortBooking.setId(booking.getId());
