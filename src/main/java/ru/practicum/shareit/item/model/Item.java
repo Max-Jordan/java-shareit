@@ -3,26 +3,39 @@ package ru.practicum.shareit.item.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.booking.dto.ShortBooking;
+import ru.practicum.shareit.comment.CommentResponseDto;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
+import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "items")
 public class Item {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "item_id")
     private Long id;
-    private Long ownerId;
-    @NotNull
-    @NotBlank(message = "Enter the name")
+
+    @Column
     private String name;
-    @NotNull
-    @NotBlank(message = "Enter the description")
+
+    @Column
     private String description;
-    @NotNull
+    @Column(name = "is_available")
     private Boolean available;
+
+    @Column(name = "owner_id")
+    private Long idOwner;
+
+    @Transient
+    private ShortBooking nextBooking;
+    @Transient
+    private ShortBooking lastBooking;
+    @Transient
+    private List<CommentResponseDto> comments;
 }

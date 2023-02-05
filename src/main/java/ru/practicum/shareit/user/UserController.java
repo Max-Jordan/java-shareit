@@ -26,12 +26,12 @@ public class UserController {
     }
 
     @PostMapping
-    public User saveUser(@Valid @RequestBody User user) {
+    public User saveUser(@Valid @RequestBody UserDto user) {
         return userService.saveUser(user);
     }
 
     @PatchMapping("/{userId}")
-    public User editUser(@PathVariable long userId, @RequestBody User user) {
+    public User editUser(@PathVariable long userId, @RequestBody UserDto user) {
         return userService.editUser(userId, user);
     }
 
