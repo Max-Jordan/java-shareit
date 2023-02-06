@@ -14,6 +14,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class UserDto {
 
+    private Long id;
     @NotBlank
     private String name;
     @Email(message = "Please enter the correct email")

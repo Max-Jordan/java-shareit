@@ -2,6 +2,8 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -13,14 +15,17 @@ import ru.practicum.shareit.comment.CommentResponseDto;
 import ru.practicum.shareit.exception.BookingException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.mapper.BookingMapper;
 import ru.practicum.shareit.mapper.CommentMapper;
 import ru.practicum.shareit.mapper.ItemMapper;
+import ru.practicum.shareit.mapper.UserMapper;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,15 +43,15 @@ public class ItemServiceImpl implements ItemService {
     private static final String NOT_FOUND = " not found";
 
     @Override
-    public Item saveItem(Long ownerId, ItemDto dto) {
+    public ItemResponseDto saveItem(Long ownerId, ItemDto dto) {
         Item item = ItemMapper.mapToItem(dto);
         item.setIdOwner(userService.getUserById(ownerId).getId());
         log.info("A request was received to save item");
-        return itemRepository.save(item);
+        return ItemMapper.mapToItemResponseDto(itemRepository.save(item));
     }
 
     @Override
-    public List<Item> getItemsByUser(Long ownerId) {
+    public List<ItemResponseDto> getItemsByUser(Long ownerId) {
         log.info("A request was received to receive the user's items");
         return itemRepository.findAll().stream()
                 .filter(x -> Objects.equals(x.getIdOwner(), ownerId))
@@ -58,11 +63,12 @@ public class ItemServiceImpl implements ItemService {
                             .map(CommentMapper::mapToCommentResponseDto)
                             .collect(Collectors.toList()));
                 })
+                .map(ItemMapper::mapToItemResponseDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Item getItemById(Long itemId, Long userId) {
+    public ItemResponseDto getItemById(Long itemId, Long userId) {
         log.info("A request was received to receive item by id");
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item not found"));
         if (Objects.equals(item.getIdOwner(), userId)) {
@@ -73,11 +79,11 @@ public class ItemServiceImpl implements ItemService {
         item.setComments(commentRepository.findAllByItemId(itemId).stream()
                 .map(CommentMapper::mapToCommentResponseDto)
                 .collect(Collectors.toList()));
-        return item;
+        return ItemMapper.mapToItemResponseDto(item);
     }
 
     @Override
-    public Item editItem(Long ownerId, Long itemId, ItemDto item) {
+    public ItemResponseDto editItem(Long ownerId, Long itemId, ItemDto item) {
         log.info("A request was received to edit item with id " + itemId);
         Item updateItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Item with id " + itemId + NOT_FOUND));
@@ -87,19 +93,25 @@ public class ItemServiceImpl implements ItemService {
         Optional.ofNullable(item.getDescription()).ifPresent(updateItem::setDescription);
         Optional.ofNullable(item.getName()).ifPresent(updateItem::setName);
         Optional.ofNullable(item.getAvailable()).ifPresent(updateItem::setAvailable);
-        return itemRepository.saveAndFlush(updateItem);
+        return ItemMapper.mapToItemResponseDto(itemRepository.saveAndFlush(updateItem));
     }
 
     @Override
-    public List<Item> getItemBySearch(String name) {
+    public List<ItemResponseDto> getItemBySearch(String name) {
         log.info("A request was received to receive item by name or description");
-        return itemRepository.getItemsBySearch(name);
+        if (StringUtils.isEmpty(name)) {
+            return Collections.emptyList();
+        }
+        return itemRepository.findAllByNameOrDescriptionContainingIgnoreCase(name,name).stream()
+                .filter(item -> BooleanUtils.isTrue(item.getAvailable()))
+                .map(ItemMapper::mapToItemResponseDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public CommentResponseDto addComment(Long itemId, Long userId, CommentDto dto) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item not found"));
-        User user = userService.getUserById(userId);
+        User user = UserMapper.mapToUser(userService.getUserById(userId));
 
         List<Booking> bookings = bookingRepository.findByItemIdAndBookerIdAndEndIsBeforeOrderByStartDesc(
                 itemId, userId, LocalDateTime.now());

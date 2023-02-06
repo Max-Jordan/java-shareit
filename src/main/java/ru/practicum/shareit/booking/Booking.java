@@ -23,7 +23,7 @@ public class Booking {
     private LocalDateTime end;
 
     @Enumerated(EnumType.STRING)
-    private IsApproved status;
+    private State status;
 
     @ManyToOne
     @JoinColumn(name = "booker_id")

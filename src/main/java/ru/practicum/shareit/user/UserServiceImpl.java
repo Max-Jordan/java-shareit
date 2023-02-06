@@ -8,8 +8,12 @@ import ru.practicum.shareit.exception.AlreadyExistException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.mapper.UserMapper;
 
+import static ru.practicum.shareit.mapper.UserMapper.mapToUser;
+import static ru.practicum.shareit.mapper.UserMapper.mapToUserDto;
+
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,23 +26,23 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User saveUser(UserDto user) {
+    public UserDto saveUser(UserDto user) {
         log.info("A request was received to save user");
-        return userRepository.save(UserMapper.mapToUser(user));
+        return mapToUserDto(userRepository.save(mapToUser(user)));
     }
 
     @Transactional
     @Override
-    public User editUser(long userId, UserDto user) {
+    public UserDto editUser(long userId, UserDto user) {
         log.info("A request was received to edit user with id " + userId);
         User updateUser = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User was not found"));
         Optional.ofNullable(user.getName()).ifPresent(updateUser::setName);
         if (Optional.ofNullable(user.getEmail()).isPresent()) {
-            findUserByEmail(UserMapper.mapToUser(user));
+            findUserByEmail(mapToUser(user));
             updateUser.setEmail(user.getEmail());
         }
-        return userRepository.saveAndFlush(updateUser);
+        return mapToUserDto(userRepository.saveAndFlush(updateUser));
     }
 
     @Transactional
@@ -49,16 +53,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         log.info("A request was received to get all users");
-        return userRepository.findAll();
+        return userRepository.findAll().stream()
+                .map(UserMapper::mapToUserDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public User getUserById(long userId) {
+    public UserDto getUserById(long userId) {
         log.info("A request was received to receive user by id " + userId);
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User with id " + userId + "was not found"));
+        return mapToUserDto(userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User with id " + userId + "was not found")));
     }
 
     private void findUserByEmail(User user) {
