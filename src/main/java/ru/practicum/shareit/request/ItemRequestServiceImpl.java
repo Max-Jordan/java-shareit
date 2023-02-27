@@ -1,8 +1,6 @@
 package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.ItemRepository;
@@ -50,8 +48,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ResponseItemRequestDto> getRequestByOtherUser(Long userId, Integer index, Integer size) {
         return setItems(repository.findAllByRequesterIsNotOrderByTimeCreateDesc
                         (getUserFromRepository(userId), PaginationMapper.mapToPageable(index, size))
-                .stream()
-                .map(ItemRequestMapper::mapToResponseDto)
+                .stream().map(ItemRequestMapper::mapToResponseDto)
                 .collect(Collectors.toList()));
     }
 
@@ -60,8 +57,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         getUserFromRepository(ownerId);
         ResponseItemRequestDto dto = ItemRequestMapper.mapToResponseDto
                 (repository.findById(id).orElseThrow(() -> new NotFoundException("The request was not found")));
-        dto.setItems(itemRepository.findAllByRequestId(id)
-                .stream()
+        dto.setItems(itemRepository.findAllByRequestId(id).stream()
                 .map(ItemMapper::mapToItemResponseDto)
                 .collect(toList()));
         return dto;

@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ResponseItemRequestDto;
 import ru.practicum.shareit.user.UserRepository;
@@ -21,7 +20,6 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -75,8 +73,8 @@ class ItemRequestServiceImplTest {
 
     @Test
     void getResponses_shouldReturnListOfResponses() {
-        ItemResponseDto responseDto = makeItemResponseDto(makeItemDto(1L),1L);
-        when(itemRepository.findAllByRequestId(anyLong())).thenReturn(List.of(makeItem(1L),makeItem(2L)));
+        ItemResponseDto responseDto = makeItemResponseDto(makeItemDto(1L), 1L);
+        when(itemRepository.findAllByRequestId(anyLong())).thenReturn(List.of(makeItem(1L), makeItem(2L)));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(makeUser(1L)));
         when(itemRequestRepository.findAllByRequester(any())).thenReturn(List.of(request));
 
@@ -101,7 +99,7 @@ class ItemRequestServiceImplTest {
     void getResponses_shouldReturnUserException() {
         when(userRepository.findById(anyLong())).thenThrow(new NotFoundException("message"));
 
-        assertThatThrownBy(()->itemRequestService.getResponses(1L)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> itemRequestService.getResponses(1L)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -109,18 +107,18 @@ class ItemRequestServiceImplTest {
         when(itemRequestRepository.findAllByRequesterIsNotOrderByTimeCreateDesc(any(), any())).thenReturn(List.of(request));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(makeUser(1L)));
 
-        assertThat(itemRequestService.getRequestByOtherUser(1L, 1, 1 ).size(), equalTo(1));
+        assertThat(itemRequestService.getRequestByOtherUser(1L, 1, 1).size(), equalTo(1));
     }
 
     @Test
     void getRequestById_shouldReturnRequest() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(makeUser(1L)));
-        when(itemRepository.findAllByRequestId(anyLong())).thenReturn(List.of(makeItem(1L),makeItem(1L)));
+        when(itemRepository.findAllByRequestId(anyLong())).thenReturn(List.of(makeItem(1L), makeItem(1L)));
         when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.of(request));
 
         ItemResponseDto responseDto = makeItemResponseDto(makeItemDto(1L), 1L);
         assertThat(itemRequestService.getRequestById(1L, 1L).getCreated(), equalTo(response.getCreated()));
-        assertThat(itemRequestService.getRequestById(1L, 1L).getDescription(),equalTo(response.getDescription()));
+        assertThat(itemRequestService.getRequestById(1L, 1L).getDescription(), equalTo(response.getDescription()));
         List<ItemResponseDto> items = itemRequestService.getRequestById(1L, 1L).getItems();
         assertThat(items.size(), equalTo(2));
         assertThat(items.contains(responseDto), is(true));

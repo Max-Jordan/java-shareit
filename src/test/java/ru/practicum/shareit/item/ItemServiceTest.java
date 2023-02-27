@@ -74,12 +74,12 @@ class ItemServiceTest {
         when(userService.getUserById(anyLong())).thenReturn(userDto);
         when(itemRepository.save(any())).thenReturn(item);
 
-        assertThat(itemService.saveItem(userDto.getId(),dto).equals(itemResponseDto), is(true));
+        assertThat(itemService.saveItem(userDto.getId(), dto).equals(itemResponseDto), is(true));
     }
 
     @Test
     void getItemsBySearch_shouldReturnEmptyList() {
-        assertThat(itemService.getItemBySearch("",1 ,1), equalTo(Collections.emptyList()));
+        assertThat(itemService.getItemBySearch("", 1, 1), equalTo(Collections.emptyList()));
     }
 
     @Test
@@ -87,14 +87,15 @@ class ItemServiceTest {
         when(itemRepository.findAllByNameOrDescriptionContainingIgnoreCase(anyString(), anyString(), any()))
                 .thenReturn(List.of(makeItem(2), item));
 
-        assertThat(itemService.getItemBySearch("test",2, 2).size(), equalTo(2));
+        assertThat(itemService.getItemBySearch("test", 2, 2).size(), equalTo(2));
         assertThat(itemService.getItemBySearch("test", 2, 2)
                 .contains(itemResponseDto), is(true));
     }
+
     @Test
     void getItemsByUser_shouldReturnList() {
         when(itemRepository.findAllByIdOwner(anyLong(), any())).thenReturn(List.of(item));
-        assertThat(itemService.getItemsByUser(1L, 2, 2).get(0).equals(itemResponseDto),is(true));
+        assertThat(itemService.getItemsByUser(1L, 2, 2).get(0).equals(itemResponseDto), is(true));
     }
 
     @Test
@@ -102,12 +103,13 @@ class ItemServiceTest {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
         itemResponseDto.setComments(Collections.emptyList());
 
-        assertThat(itemService.getItemById(1L,1L).equals(itemResponseDto), is(true));
+        assertThat(itemService.getItemById(1L, 1L).equals(itemResponseDto), is(true));
     }
 
-    @Test void getItemBy_shouldReturnException() {
+    @Test
+    void getItemBy_shouldReturnException() {
         when(itemRepository.findById(anyLong())).thenThrow(new NotFoundException("Not found"));
-        assertThatThrownBy(() -> itemService.getItemById(1L,1L)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> itemService.getItemById(1L, 1L)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -122,7 +124,7 @@ class ItemServiceTest {
         when(itemRepository.saveAndFlush(any())).thenReturn(item);
 
 
-        assertThat(itemService.editItem(1L,1L, updateItem)
+        assertThat(itemService.editItem(1L, 1L, updateItem)
                 .equals(itemResponseDto), is(true));
     }
 
@@ -130,38 +132,38 @@ class ItemServiceTest {
     void editItem_shouldReturnException() {
         when(itemRepository.findById(anyLong())).thenThrow(new NotFoundException("item not found"));
 
-        assertThatThrownBy(() -> itemService.editItem(1L,1L,dto)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> itemService.editItem(1L, 1L, dto)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
     void editItem_shouldThrowExceptionByOwner() {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
 
-        assertThatThrownBy(() -> itemService.editItem(99L,1L, dto)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> itemService.editItem(99L, 1L, dto)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
     void addComment_shouldReturnComment() {
-        Comment comment = makeComment(1L,makeUser(1L),item);
+        Comment comment = makeComment(1L, makeUser(1L), item);
         CommentDto commentDto = makeCommentDto(comment);
         CommentResponseDto response = makeResponseDto(comment);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
         when(userService.getUserById(anyLong())).thenReturn(userDto);
         when(commentRepository.save(any())).thenReturn(comment);
-        when(bookingRepository.findByItemIdAndBookerIdAndEndIsBeforeOrderByStartDesc(anyLong(),anyLong(),any()))
+        when(bookingRepository.findByItemIdAndBookerIdAndEndIsBeforeOrderByStartDesc(anyLong(), anyLong(), any()))
                 .thenReturn(List.of(new Booking()));
-        assertThat(itemService.addComment(1L,1L, commentDto).getAuthorName(),
+        assertThat(itemService.addComment(1L, 1L, commentDto).getAuthorName(),
                 equalTo(response.getAuthorName()));
-        assertThat(itemService.addComment(1L,1L,commentDto).getText(), equalTo(response.getText()));
+        assertThat(itemService.addComment(1L, 1L, commentDto).getText(), equalTo(response.getText()));
     }
 
     @Test
     void addComment_shouldReturnException() {
-        Comment comment = makeComment(1L,makeUser(1L),item);
+        Comment comment = makeComment(1L, makeUser(1L), item);
         CommentDto commentDto = makeCommentDto(comment);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
         when(userService.getUserById(anyLong())).thenReturn(userDto);
-        assertThatThrownBy(()-> itemService.addComment(1L,1L,commentDto))
+        assertThatThrownBy(() -> itemService.addComment(1L, 1L, commentDto))
                 .isInstanceOf(BookingException.class);
     }
 }
