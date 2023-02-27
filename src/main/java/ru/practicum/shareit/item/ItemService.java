@@ -11,13 +11,13 @@ public interface ItemService {
 
     ItemResponseDto saveItem(Long ownerId, ItemDto item);
 
-    List<ItemResponseDto> getItemsByUser(Long ownerId);
+    List<ItemResponseDto> getItemsByUser(Long ownerId, Integer index, Integer size);
 
     ItemResponseDto getItemById(Long itemId, Long userId);
 
     ItemResponseDto editItem(Long ownerId, Long itemId, ItemDto item);
 
-    List<ItemResponseDto> getItemBySearch(String name);
+    List<ItemResponseDto> getItemBySearch(String name, Integer index, Integer size);
 
     CommentResponseDto addComment(Long itemId, Long userId, CommentDto dto);
 }

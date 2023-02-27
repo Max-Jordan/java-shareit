@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS USERS
     user_id BIGINT generated always as identity,
     name    CHARACTER VARYING(50)  not null,
     email   CHARACTER VARYING(200) not null,
+
     constraint USERS_pk
         primary key (user_id)
 );
@@ -12,15 +13,15 @@ CREATE TABLE IF NOT EXISTS USERS
 create unique index if not exists "USERS_index"
     on USERS (email);
 
-create table if not exists REQUESTS
+CREATE TABLE if not exists item_request
 (
-    requests_id  BIGINT generated always as identity,
-    description  varchar(500) not null,
-    requestor_id BIGINT       not null,
-    CONSTRAINT requests_pk
-        primary key (requests_id),
-    constraint requests_fk
-        foreign key (requestor_id) references USERS (user_id) ON DELETE CASCADE
+    id           BIGINT AUTO_INCREMENT NOT NULL,
+    description  VARCHAR(255),
+    time_create  TIMESTAMP,
+    requester BIGINT,
+    CONSTRAINT pk_itemrequest PRIMARY KEY (id),
+    constraint FK_ITEM_REQUEST
+        foreign key (requester) REFERENCES USERS (user_id)
 );
 
 CREATE TABLE IF NOT EXISTS ITEMS
@@ -36,7 +37,7 @@ CREATE TABLE IF NOT EXISTS ITEMS
     constraint ITEMS_USERS_id_fk
         foreign key (owner_id) references USERS (user_id) ON DELETE CASCADE,
     constraint ITEMS_REQUEST_fk
-        foreign key (request_id) references REQUESTS (requests_id) ON DELETE CASCADE
+        foreign key (request_id) references item_request (id) ON DELETE CASCADE
 );
 
 
@@ -70,3 +71,4 @@ create table if not exists COMMENTS
     CONSTRAINT COMMENTS_ITEM_fk
         foreign key (item_id) REFERENCES ITEMS (item_id)
 );
+
