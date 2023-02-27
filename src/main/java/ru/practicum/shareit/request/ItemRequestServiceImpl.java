@@ -46,17 +46,16 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ResponseItemRequestDto> getRequestByOtherUser(Long userId, Integer index, Integer size) {
-        return setItems(repository.findAllByRequesterIsNotOrderByTimeCreateDesc
-                        (getUserFromRepository(userId), PaginationMapper.mapToPageable(index, size))
-                .stream().map(ItemRequestMapper::mapToResponseDto)
+        return setItems(repository.findAllByRequesterIsNotOrderByTimeCreateDesc(getUserFromRepository(userId), PaginationMapper.mapToPageable(index, size))
+                .stream()
+                .map(ItemRequestMapper::mapToResponseDto)
                 .collect(Collectors.toList()));
     }
 
     @Override
     public ResponseItemRequestDto getRequestById(Long id, Long ownerId) {
         getUserFromRepository(ownerId);
-        ResponseItemRequestDto dto = ItemRequestMapper.mapToResponseDto
-                (repository.findById(id).orElseThrow(() -> new NotFoundException("The request was not found")));
+        ResponseItemRequestDto dto = ItemRequestMapper.mapToResponseDto(repository.findById(id).orElseThrow(() -> new NotFoundException("The request was not found")));
         dto.setItems(itemRepository.findAllByRequestId(id).stream()
                 .map(ItemMapper::mapToItemResponseDto)
                 .collect(toList()));
@@ -65,8 +64,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
 
     private User getUserFromRepository(Long userId) {
-        return userRepository.findById
-                (userId).orElseThrow(() -> new NotFoundException("User with id " + userId + " not exist"));
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not exist"));
     }
 
     private List<ResponseItemRequestDto> setItems(List<ResponseItemRequestDto> itemRequest) {

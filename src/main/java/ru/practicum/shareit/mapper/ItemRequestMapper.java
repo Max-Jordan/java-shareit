@@ -1,6 +1,5 @@
 package ru.practicum.shareit.mapper;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.request.ItemRequest;
