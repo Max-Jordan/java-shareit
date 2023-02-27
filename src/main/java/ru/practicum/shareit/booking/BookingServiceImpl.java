@@ -164,7 +164,7 @@ public class BookingServiceImpl implements BookingService {
                     " than the current time or start time");
         }
         if (Objects.equals(item.getIdOwner(), userId)) {
-            throw new BookingException("User with id " + userId + " can't book thing with id " + booking.getItemId());
+            throw new NotFoundException("User with id " + userId + " can't book thing with id " + booking.getItemId());
         }
     }
 

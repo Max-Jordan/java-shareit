@@ -120,7 +120,7 @@ class BookingServiceImplTest {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(makeItem(1L)));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(makeUser(1L)));
 
-        assertThatThrownBy(() -> bookingService.createBooking(dto, 1L)).isInstanceOf(BookingException.class);
+        assertThatThrownBy(() -> bookingService.createBooking(dto, 1L)).isInstanceOf(NotFoundException.class);
     }
 
 
