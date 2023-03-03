@@ -81,14 +81,12 @@ public class BookingServiceImpl implements BookingService {
                         .collect(Collectors.toList());
             case FUTURE:
                 return bookingRepository.findAllByBookerIdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now(),
-                                pageable)
-                        .stream()
+                                pageable).stream()
                         .map(BookingMapper::mapToBookingResponseDto)
                         .collect(Collectors.toList());
             case PAST:
                 return bookingRepository.findAllByBookerIdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now(),
-                                pageable)
-                        .stream()
+                                pageable).stream()
                         .map(BookingMapper::mapToBookingResponseDto)
                         .collect(Collectors.toList());
             case CURRENT:

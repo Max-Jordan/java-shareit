@@ -7,6 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.exception.BookingException;
@@ -182,7 +184,8 @@ class BookingServiceImplTest {
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdOrderByStartDesc() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(makeUser(1)));
-        bookingService.getBookingsByUser(1L, State.ALL, null);
+        when(bookingRepository.findAllByBookerIdOrderByStartDesc(anyLong(), any())).thenReturn(Page.empty());
+        bookingService.getBookingsByUser(1L, State.ALL, PageRequest.of(1, 1));
         verify(bookingRepository, atMostOnce()).findAllByBookerIdOrderByStartDesc(anyLong(), any());
     }
 
@@ -190,7 +193,9 @@ class BookingServiceImplTest {
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(makeUser(1)));
-        bookingService.getBookingsByUser(1L, State.CURRENT, null);
+        when(bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfter(anyLong(), any(), any(), any()))
+                .thenReturn(Page.empty());
+        bookingService.getBookingsByUser(1L, State.CURRENT, PageRequest.of(1, 1));
         verify(bookingRepository, atMostOnce())
                 .findAllByBookerIdAndStartBeforeAndEndAfter(Mockito.anyLong(), Mockito.any(), Mockito.any(), Mockito.any());
     }
@@ -198,6 +203,9 @@ class BookingServiceImplTest {
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdAndEndBeforeOrderByStartDesc() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(makeUser(1)));
+        when(bookingRepository.findAllByBookerIdAndEndBeforeOrderByStartDesc(Mockito.anyLong(), Mockito.any(),
+                Mockito.any()))
+                .thenReturn(Page.empty());
         bookingService.getBookingsByUser(1L, State.PAST, null);
         verify(bookingRepository, atMostOnce())
                 .findAllByBookerIdAndEndBeforeOrderByStartDesc(Mockito.anyLong(), Mockito.any(), Mockito.any());
@@ -206,6 +214,8 @@ class BookingServiceImplTest {
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdAndStartAfterOrderByStartDesc() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(makeUser(1)));
+        when(bookingRepository.findAllByBookerIdAndStartAfterOrderByStartDesc(Mockito.anyLong(), Mockito.any(),
+                Mockito.any())).thenReturn(Page.empty());
         bookingService.getBookingsByUser(1L, State.FUTURE, null);
         verify(bookingRepository, atMostOnce())
                 .findAllByBookerIdAndStartAfterOrderByStartDesc(Mockito.anyLong(), Mockito.any(), Mockito.any());
@@ -214,6 +224,8 @@ class BookingServiceImplTest {
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdAndStatusOrderByStartDescWithStatusWaiting() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(makeUser(1)));
+        when(bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(1L, State.WAITING, null))
+                .thenReturn(Page.empty());
         bookingService.getBookingsByUser(1L, State.WAITING, null);
         verify(bookingRepository, atMostOnce())
                 .findAllByBookerIdAndStatusOrderByStartDesc(1L, State.WAITING, null);
@@ -222,6 +234,8 @@ class BookingServiceImplTest {
     @Test
     void getAllByBooker_shouldCallFindAllByBookerIdAndStatusOrderByStartDescWithStatusRejected() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(makeUser(1)));
+        when(bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(1L, State.REJECTED, null))
+                .thenReturn(Page.empty());
         bookingService.getBookingsByUser(1L, State.REJECTED, null);
         verify(bookingRepository, atMostOnce())
                 .findAllByBookerIdAndStatusOrderByStartDesc(1L, State.REJECTED, null);
@@ -230,6 +244,8 @@ class BookingServiceImplTest {
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdOrderByStartDesc() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(makeUser(1)));
+        when(bookingRepository.findAllByItemIdOwnerOrderByStartDesc(Mockito.anyLong(), Mockito.any()))
+                .thenReturn(Page.empty());
         bookingService.findBookingsByOwner(1L, State.ALL, null);
         verify(bookingRepository, atMostOnce()).findAllByItemIdOwnerOrderByStartDesc(Mockito.anyLong(), Mockito.any());
     }
@@ -237,14 +253,19 @@ class BookingServiceImplTest {
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(makeUser(1)));
+        when(bookingRepository.findAllByItemIdOwnerAndStartBeforeAndEndAfter(Mockito.anyLong(), Mockito.any(),
+                Mockito.any(), Mockito.any())).thenReturn(Page.empty());
         bookingService.findBookingsByOwner(1L, State.CURRENT, null);
         verify(bookingRepository, atMostOnce())
-                .findAllByItemIdOwnerAndStartBeforeAndEndAfter(Mockito.anyLong(), Mockito.any(), Mockito.any(), Mockito.any());
+                .findAllByItemIdOwnerAndStartBeforeAndEndAfter(Mockito.anyLong(), Mockito.any(), Mockito.any(),
+                        Mockito.any());
     }
 
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdAndEndBeforeOrderByStartDesc() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(makeUser(1)));
+        when(bookingRepository.findAllByItemIdOwnerAndEndBeforeOrderByStartDesc(Mockito.anyLong(), Mockito.any(),
+                Mockito.any())).thenReturn(Page.empty());
         bookingService.findBookingsByOwner(1L, State.PAST, null);
         verify(bookingRepository, atMostOnce())
                 .findAllByItemIdOwnerAndEndBeforeOrderByStartDesc(Mockito.anyLong(), Mockito.any(), Mockito.any());
@@ -253,6 +274,8 @@ class BookingServiceImplTest {
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdAndStartAfterOrderByStartDesc() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(makeUser(1)));
+        when(bookingRepository.findAllByItemIdOwnerAndStartAfterOrderByStartDesc(Mockito.anyLong(), Mockito.any(),
+                Mockito.any())).thenReturn(Page.empty());
         bookingService.findBookingsByOwner(1L, State.FUTURE, null);
         verify(bookingRepository, atMostOnce())
                 .findAllByItemIdOwnerAndStartAfterOrderByStartDesc(Mockito.anyLong(), Mockito.any(), Mockito.any());
@@ -261,6 +284,8 @@ class BookingServiceImplTest {
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdAndStatusOrderByStartDescWithStatusWaiting() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(makeUser(1)));
+        when(bookingRepository.findAllByItemIdOwnerAndStatusOrderByStartDesc(1L, State.WAITING, null))
+                .thenReturn(Page.empty());
         bookingService.findBookingsByOwner(1L, State.WAITING, null);
         verify(bookingRepository, atMostOnce())
                 .findAllByItemIdOwnerAndStatusOrderByStartDesc(1L, State.WAITING, null);
@@ -269,6 +294,8 @@ class BookingServiceImplTest {
     @Test
     void getAllByOwner_shouldCallFindAllByItemOwnerIdAndStatusOrderByStartDescWithStatusRejected() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(makeUser(1)));
+        when(bookingRepository.findAllByItemIdOwnerAndStatusOrderByStartDesc(1L, State.REJECTED, null))
+                .thenReturn(Page.empty());
         bookingService.findBookingsByOwner(1L, State.REJECTED, null);
         verify(bookingRepository, atMostOnce())
                 .findAllByItemIdOwnerAndStatusOrderByStartDesc(1L, State.REJECTED, null);
