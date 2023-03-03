@@ -2,6 +2,7 @@ package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.mapper.ItemMapper;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.*;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class ItemRequestServiceImpl implements ItemRequestService {
 
