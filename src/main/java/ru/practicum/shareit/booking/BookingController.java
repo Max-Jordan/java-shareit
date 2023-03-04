@@ -1,21 +1,27 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.exception.StatusException;
+import ru.practicum.shareit.mapper.PaginationMapper;
 
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
+@Validated
 public class BookingController {
 
     private final BookingService bookingService;
 
     private static final String SHARER_HEADER = "X-Sharer-User-Id";
+    private static final String MESSAGE_FOR_INDEX = "The index can't be negative";
+    private static final String MESSAGE_FOR_SIZE = "The size can't be less than one";
 
     @PostMapping
     public BookingResponseDto createBooking(@RequestHeader(SHARER_HEADER) Long userId,
@@ -38,10 +44,16 @@ public class BookingController {
     @GetMapping
     public List<BookingResponseDto> findBookingsByUser(@RequestHeader(SHARER_HEADER) Long userId,
                                                        @RequestParam(required = false,
-                                                               value = "state",
-                                                               defaultValue = "ALL") String state) {
+                                                               value = "state", defaultValue = "ALL") String state,
+                                                       @RequestParam(name = "from",
+                                                               required = false, defaultValue = "0")
+                                                       @Min(value = 0, message = MESSAGE_FOR_INDEX) Integer index,
+                                                       @RequestParam(name = "size",
+                                                               required = false, defaultValue = "20")
+                                                       @Min(value = 1, message = MESSAGE_FOR_SIZE) Integer size) {
         try {
-            return bookingService.getBookingsByUser(userId, Enum.valueOf(State.class, state));
+            return bookingService.getBookingsByUser(userId, Enum.valueOf(State.class, state),
+                    PaginationMapper.mapToPageable(index, size));
         } catch (IllegalArgumentException e) {
             throw new StatusException();
         }
@@ -51,9 +63,14 @@ public class BookingController {
     public List<BookingResponseDto> findBookingByOwner(@RequestHeader(SHARER_HEADER) Long ownerId,
                                                        @RequestParam(required = false,
                                                                value = "state",
-                                                               defaultValue = "ALL") String state) {
+                                                               defaultValue = "ALL") String state,
+                                                       @RequestParam(name = "from", required = false, defaultValue = "0")
+                                                       @Min(value = 0, message = MESSAGE_FOR_INDEX) Integer index,
+                                                       @RequestParam(name = "size", required = false, defaultValue = "20")
+                                                       @Min(value = 1, message = MESSAGE_FOR_SIZE) Integer size) {
         try {
-            return bookingService.findBookingsByOwner(ownerId, Enum.valueOf(State.class, state));
+            return bookingService.findBookingsByOwner(ownerId, Enum.valueOf(State.class, state),
+                    PaginationMapper.mapToPageable(index, size));
         } catch (IllegalArgumentException e) {
             throw new StatusException();
         }

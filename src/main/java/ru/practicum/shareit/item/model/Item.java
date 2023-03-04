@@ -32,6 +32,9 @@ public class Item {
     @Column(name = "owner_id")
     private Long idOwner;
 
+    @Column(name = "request_id")
+    private Long requestId;
+
     @Transient
     private ShortBooking nextBooking;
     @Transient

@@ -17,10 +17,7 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.mapper.BookingMapper;
-import ru.practicum.shareit.mapper.CommentMapper;
-import ru.practicum.shareit.mapper.ItemMapper;
-import ru.practicum.shareit.mapper.UserMapper;
+import ru.practicum.shareit.mapper.*;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
@@ -51,10 +48,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemResponseDto> getItemsByUser(Long ownerId) {
+    public List<ItemResponseDto> getItemsByUser(Long ownerId, Integer index, Integer size) {
         log.info("A request was received to receive the user's items");
-        return itemRepository.findAll().stream()
-                .filter(x -> Objects.equals(x.getIdOwner(), ownerId))
+        return itemRepository.findAllByIdOwner(ownerId, PaginationMapper.mapToPageable(index, size)).stream()
                 .peek(item -> {
                     List<Booking> bookings = bookingRepository.findAllByItemIdOrderByStartDesc(item.getId());
                     item.setNextBooking(getNextBooking(bookings));
@@ -97,12 +93,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemResponseDto> getItemBySearch(String name) {
+    public List<ItemResponseDto> getItemBySearch(String name, Integer index, Integer size) {
         log.info("A request was received to receive item by name or description");
         if (StringUtils.isEmpty(name)) {
             return Collections.emptyList();
         }
-        return itemRepository.findAllByNameOrDescriptionContainingIgnoreCase(name,name).stream()
+        return itemRepository.findAllByNameOrDescriptionContainingIgnoreCase(name, name, PaginationMapper.mapToPageable(index, size))
+                .stream()
                 .filter(item -> BooleanUtils.isTrue(item.getAvailable()))
                 .map(ItemMapper::mapToItemResponseDto)
                 .collect(Collectors.toList());
