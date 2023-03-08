@@ -13,10 +13,12 @@ import java.util.Map;
 @Service
 public class RequestClient extends BaseClient {
 
+    private static final String API_PREFIX= "/requests";
+
     public RequestClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
-                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + "/requests"))
+                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
                         .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                         .build()
         );
@@ -31,15 +33,15 @@ public class RequestClient extends BaseClient {
         return get("/", userId);
     }
 
-    public ResponseEntity<Object> getRequestByOtherUser(Long userId, Integer index, Integer size) {
-        Map<String, Object> parameters = Map.of(
-                "index", index,
-                "size", size
-        );
-        return get("/", userId, parameters);
-    }
-
     public ResponseEntity<Object> getRequestById(Long requestId, Long userId) {
         return get("/" + requestId, userId);
     }
-}
+
+    public ResponseEntity<Object> getAllRequests(Long userId, Integer from, Integer size) {
+            Map<String, Object> parameters = Map.of(
+                    "from", from,
+                    "size", size
+            );
+            return get("/all/?from={from}&size={size}", userId, parameters);
+        }
+    }

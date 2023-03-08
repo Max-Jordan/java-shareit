@@ -20,6 +20,7 @@ public class ItemRequestMapper {
         dto.setId(itemRequest.getId());
         dto.setCreated(itemRequest.getTimeCreate());
         dto.setDescription(itemRequest.getDescription());
+        dto.setRequesterId(itemRequest.getRequester().getId());
         return dto;
     }
 }

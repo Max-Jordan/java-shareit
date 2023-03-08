@@ -39,7 +39,7 @@ public class RequestController {
             Integer index,
             @RequestParam(name = "size", required = false, defaultValue = "20")
             @Min(value = 1, message = "Size can't be less than one") Integer size) {
-        return client.getRequestByOtherUser(userId, index, size);
+        return client.getAllRequests(userId, index, size);
     }
 
     @GetMapping("/{requestId}")

@@ -48,7 +48,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ResponseItemRequestDto> getRequestByOtherUser(Long userId, Integer index, Integer size) {
-        return setItems(repository.findAllByRequesterIsNotOrderByTimeCreateDesc(getUserFromRepository(userId), PaginationMapper.mapToPageable(index, size))
+        return setItems(repository.findItemRequestByRequesterIsNotOrderByTimeCreateDesc(getUserFromRepository(userId),
+                        PaginationMapper.mapToPageable(index, size))
                 .stream()
                 .map(ItemRequestMapper::mapToResponseDto)
                 .collect(Collectors.toList()));
