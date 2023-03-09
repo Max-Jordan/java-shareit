@@ -6,8 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import static org.springframework.data.domain.PageRequest.of;
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PaginationMapper {
 
