@@ -1,4 +1,3 @@
-
 CREATE TABLE IF NOT EXISTS USERS
 (
     user_id BIGINT generated always as identity,
@@ -14,10 +13,10 @@ create unique index if not exists "USERS_index"
 
 CREATE TABLE if not exists item_request
 (
-    id           BIGINT generated always as identity NOT NULL,
-    description  VARCHAR(255),
-    time_create  TIMESTAMP,
-    requester BIGINT,
+    id          BIGINT generated always as identity NOT NULL,
+    description VARCHAR(255),
+    time_create TIMESTAMP,
+    requester   BIGINT,
     CONSTRAINT pk_itemrequest PRIMARY KEY (id),
     constraint FK_ITEM_REQUEST
         foreign key (requester) REFERENCES USERS (user_id)
@@ -26,7 +25,7 @@ CREATE TABLE if not exists item_request
 CREATE TABLE IF NOT EXISTS ITEMS
 (
     item_id      BIGINT generated always as identity,
-    item_name         varchar(100) not null,
+    item_name    varchar(100) not null,
     description  varchar(500),
     is_available boolean      not null,
     owner_id     BIGINT       not null,
@@ -45,7 +44,7 @@ create table if not exists BOOKINGS
     booking_id BIGINT generated always as identity,
     start_date TIMESTAMP WITHOUT TIME ZONE not null,
     end_date   TIMESTAMP WITHOUT TIME ZONE not null,
-    status     varchar(10)                      not null,
+    status     varchar(10)                 not null,
     booker_id  BIGINT                      not null,
     item_id    BIGINT                      not null,
     constraint bookings_pk

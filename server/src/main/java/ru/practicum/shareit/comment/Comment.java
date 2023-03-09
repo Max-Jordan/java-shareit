@@ -8,7 +8,9 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name = "comments")
 public class Comment {

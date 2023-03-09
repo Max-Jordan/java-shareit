@@ -18,5 +18,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findAllByRequestId(Long requestId);
 
+    @Query(value = "select * from items " +
+            "where owner_id = ?1 " +
+            "order by item_id", nativeQuery = true)
     Page<Item> findAllByIdOwner(long ownerId, Pageable pageable);
 }

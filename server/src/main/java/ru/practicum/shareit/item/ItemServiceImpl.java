@@ -100,7 +100,8 @@ public class ItemServiceImpl implements ItemService {
         if (StringUtils.isEmpty(name)) {
             return Collections.emptyList();
         }
-        return itemRepository.findAllByNameOrDescriptionContainingIgnoreCase(name, name, PaginationMapper.mapToPageable(index, size))
+        return itemRepository.findAllByNameOrDescriptionContainingIgnoreCase(name, name,
+                        PaginationMapper.mapToPageable(index, size))
                 .stream()
                 .filter(item -> BooleanUtils.isTrue(item.getAvailable()))
                 .map(ItemMapper::mapToItemResponseDto)

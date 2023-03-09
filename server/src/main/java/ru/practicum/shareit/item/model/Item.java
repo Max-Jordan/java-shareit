@@ -1,18 +1,19 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.practicum.shareit.booking.dto.ShortBooking;
 import ru.practicum.shareit.comment.CommentResponseDto;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Data
+@Entity
+@Getter
+@Setter
+@Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Table(name = "items")
 public class Item {
 
