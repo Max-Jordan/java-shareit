@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional(readOnly = true)
+@Transactional
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
@@ -51,7 +51,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemResponseDto> getItemsByUser(Long ownerId, Integer index, Integer size) {
         log.info("A request was received to receive the user's items");
         return itemRepository.findAllByIdOwner(ownerId, PaginationMapper.mapToPageableWithSort(index, size,
-                        Sort.by("id"))).stream()
+                        Sort.by("item_id"))).stream()
                 .peek(item -> {
                     List<Booking> bookings = bookingRepository.findAllByItemIdOrderByStartDesc(item.getId());
                     item.setNextBooking(getNextBooking(bookings));
