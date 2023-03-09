@@ -93,7 +93,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemResponseDto> getItemBySearch(String name, Integer index, Integer size) {
+    public List<ItemResponseDto> getItemBySearch(String name, Long userId, Integer index, Integer size) {
         log.info("A request was received to receive item by name or description");
         if (StringUtils.isEmpty(name)) {
             return Collections.emptyList();

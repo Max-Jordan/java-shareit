@@ -35,13 +35,13 @@ public class ItemClient extends BaseClient {
         return get("?index={index}&size={size}", userId, parameters);
     }
 
-    public ResponseEntity<Object> getItemBySearch(String text, Integer index, Integer size) {
+    public ResponseEntity<Object> getItemBySearch(String text, Long userId, Integer index, Integer size) {
         Map<String, Object> parameters = Map.of(
                 "text", text,
                 "index", index,
                 "size", size
         );
-        return get("/search?text={text}&index=index%size={size}", null, parameters);
+        return get("/search?text={text}&index=index%size={size}", userId, parameters);
     }
 
     public ResponseEntity<Object> editItem(ItemDto dto, long itemId, long userId) {

@@ -56,12 +56,13 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemResponseDto> getItemBySearch(
+            @RequestHeader(SHARER_HEADER) Long userId,
             @RequestParam String text,
             @RequestParam(name = "from", required = false, defaultValue = "0")
             @Min(value = 0, message = MESSAGE_FOR_INDEX) Integer index,
             @RequestParam(name = "size", required = false, defaultValue = "20")
             @Min(value = 1, message = MESSAGE_FOR_SIZE) Integer size) {
-        return itemService.getItemBySearch(text, index, size);
+        return itemService.getItemBySearch(text, userId, index, size);
     }
 
     @PostMapping("/{itemId}/comment")

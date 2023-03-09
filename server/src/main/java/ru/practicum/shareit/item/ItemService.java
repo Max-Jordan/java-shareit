@@ -17,7 +17,7 @@ public interface ItemService {
 
     ItemResponseDto editItem(Long ownerId, Long itemId, ItemDto item);
 
-    List<ItemResponseDto> getItemBySearch(String name, Integer index, Integer size);
+    List<ItemResponseDto> getItemBySearch(String name, Long userId, Integer index, Integer size);
 
     CommentResponseDto addComment(Long itemId, Long userId, CommentDto dto);
 }

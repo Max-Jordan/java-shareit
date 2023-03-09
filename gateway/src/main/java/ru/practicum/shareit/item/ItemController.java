@@ -43,12 +43,13 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> getItemsBySearch(@RequestParam String text,
+    public ResponseEntity<Object> getItemsBySearch(@RequestHeader(X_SHARER_HEADER) Long userId,
+                                                   @RequestParam String text,
                                                    @RequestParam(name = "from", required = false, defaultValue = "0")
                                                    @Min(value = 0, message = MESSAGE_FOR_INDEX) Integer index,
                                                    @RequestParam(name = "size", required = false, defaultValue = "20")
                                                    @Min(value = 1, message = MESSAGE_FOR_SIZE) Integer size) {
-        return client.getItemBySearch(text, index, size);
+        return client.getItemBySearch(text, userId, index, size);
     }
 
     @PatchMapping("/{itemId}")
