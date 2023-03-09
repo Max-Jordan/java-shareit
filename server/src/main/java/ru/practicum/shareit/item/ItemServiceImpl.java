@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.dto.ShortBooking;
@@ -22,15 +25,13 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
@@ -50,7 +51,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemResponseDto> getItemsByUser(Long ownerId, Integer index, Integer size) {
         log.info("A request was received to receive the user's items");
-        return itemRepository.findAllByIdOwner(ownerId, PaginationMapper.mapToPageable(index, size)).stream()
+        return itemRepository.findAllByIdOwner(ownerId, PaginationMapper.mapToPageableWithSort(index, size,
+                        Sort.by("id"))).stream()
                 .peek(item -> {
                     List<Booking> bookings = bookingRepository.findAllByItemIdOrderByStartDesc(item.getId());
                     item.setNextBooking(getNextBooking(bookings));
@@ -60,6 +62,7 @@ public class ItemServiceImpl implements ItemService {
                             .collect(Collectors.toList()));
                 })
                 .map(ItemMapper::mapToItemResponseDto)
+                .sorted(Comparator.comparing(ItemResponseDto::getId))
                 .collect(Collectors.toList());
     }
 
