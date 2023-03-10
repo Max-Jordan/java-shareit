@@ -80,7 +80,9 @@ class ItemRequestControllerTest {
         when(service.getRequestByOtherUser(anyLong(), anyInt(), anyInt())).thenReturn(responses);
 
         mvc.perform(get("/requests/all")
-                        .header(HEADER, 1))
+                        .header(HEADER, 1)
+                        .param("from","0")
+                        .param("size", "10"))
                 .andExpect(content().json(mapper.writeValueAsString(responses)));
     }
 

@@ -58,6 +58,20 @@ class BookingControllerTest {
     }
 
     @Test
+    void findBookingsByUser() throws Exception {
+        when(bookingService.getBookingsByUser(anyLong(), any(), any())).thenReturn(List.of(response));
+
+        mvc.perform(get("/bookings")
+                        .param("state", "ALL")
+                        .param("from","0")
+                        .param("size", "10")
+                        .header(USER_HEADER, 1)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(List.of(response))));
+    }
+
+    @Test
     void createBooking_shouldReturnBooking() throws Exception {
         when(bookingService.createBooking(any(), anyLong())).thenReturn(response);
 
@@ -102,18 +116,6 @@ class BookingControllerTest {
     }
 
     @Test
-    void findBookingsByUser() throws Exception {
-        when(bookingService.getBookingsByUser(anyLong(), any(), any())).thenReturn(List.of(response));
-
-        mvc.perform(get("/bookings")
-                        .param("state", "ALL")
-                        .header(USER_HEADER, 1)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString(List.of(response))));
-    }
-
-    @Test
     void findBookingByOwner_shouldThrowStatusException() throws Exception {
         mvc.perform(get("/bookings/owner")
                         .param("state", "unsupported")
@@ -127,6 +129,8 @@ class BookingControllerTest {
 
         mvc.perform(get("/bookings/owner")
                         .param("state", "ALL")
+                        .param("from","0")
+                        .param("size", "10")
                         .header(USER_HEADER, 1))
                 .andExpect(content().json(mapper.writeValueAsString(List.of(response))));
     }

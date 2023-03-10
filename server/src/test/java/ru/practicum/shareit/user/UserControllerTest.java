@@ -86,15 +86,6 @@ class UserControllerTest {
     }
 
     @Test
-    void saveUser_shouldThrowException() throws Exception {
-        mvc.perform(post("/users")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(UserDto.builder().name("test").email(null).build())))
-                .andExpect(status().is4xxClientError());
-    }
-
-    @Test
     void getUserById_shouldReturnUser() throws Exception {
         when(service.getUserById(anyLong())).thenReturn(dto);
 

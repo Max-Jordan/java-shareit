@@ -131,6 +131,8 @@ class ItemControllerTest {
 
         mvc.perform(get("/items/search")
                         .param("text", "test")
+                        .param("from","0")
+                        .param("size", "10")
                         .header(SHARER_HEADER, 1))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(list)));
@@ -142,6 +144,8 @@ class ItemControllerTest {
 
         mvc.perform(get("/items/search")
                         .param("text", "example")
+                        .param("from","0")
+                        .param("size", "10")
                         .header(SHARER_HEADER, 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", equalTo(0)));
@@ -181,7 +185,9 @@ class ItemControllerTest {
         when(service.getItemsByUser(anyLong(), anyInt(), anyInt())).thenReturn(List.of(responseDto));
 
         mvc.perform(get("/items")
-                        .header(SHARER_HEADER, 1))
+                        .header(SHARER_HEADER, 1)
+                        .param("from","0")
+                        .param("size", "10"))
                 .andExpect(jsonPath("$.length()", equalTo(1)))
                 .andExpect(content().json(mapper.writeValueAsString(List.of(responseDto))));
     }
