@@ -9,7 +9,6 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class RequestDto {
 
     @Size(min = 1, max = 1000)
