@@ -7,7 +7,6 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ResponseItemRequestDto;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
@@ -34,10 +33,8 @@ public class ItemRequestController {
     @GetMapping("/all")
     public List<ResponseItemRequestDto> getRequestsByOtherUser(
             @RequestHeader(SHARER_HEADER) Long userId,
-            @RequestParam(name = "from", required = false, defaultValue = "0")
-            @Min(value = 0, message = "Index can't be negative") Integer index,
-            @RequestParam(name = "size", required = false, defaultValue = "20")
-            @Min(value = 1, message = "Size can't be less than one") Integer size) {
+            @RequestParam(name = "from") Integer index,
+            @RequestParam(name = "size") Integer size) {
         return itemRequestService.getRequestByOtherUser(userId, index, size);
     }
 

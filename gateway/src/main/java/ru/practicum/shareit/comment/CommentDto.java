@@ -15,6 +15,5 @@ import javax.validation.constraints.NotBlank;
 public class CommentDto {
 
     @NotBlank
-    @Max(500)
     private String text;
 }

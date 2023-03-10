@@ -1,21 +1,17 @@
 package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.comment.CommentDto;
 import ru.practicum.shareit.comment.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
 @RequestMapping("/items")
 @AllArgsConstructor
-@Validated
 public class ItemController {
 
 
@@ -23,14 +19,9 @@ public class ItemController {
 
     private static final String SHARER_HEADER = "X-Sharer-User-Id";
 
-    private static final String MESSAGE_FOR_INDEX = "The index can't be negative";
-    private static final String MESSAGE_FOR_SIZE = "The size can't be less than one";
-
     @GetMapping
-    public List<ItemResponseDto> getItemsByUser(@RequestParam(name = "from", required = false, defaultValue = "0")
-                                                @Min(value = 0, message = MESSAGE_FOR_INDEX) Integer index,
-                                                @RequestParam(name = "size", required = false, defaultValue = "20")
-                                                @Min(value = 1, message = MESSAGE_FOR_SIZE) Integer size,
+    public List<ItemResponseDto> getItemsByUser(@RequestParam(name = "from") Integer index,
+                                                @RequestParam(name = "size") Integer size,
                                                 @RequestHeader(SHARER_HEADER) long ownerId) {
         return itemService.getItemsByUser(ownerId, index, size);
     }
@@ -42,7 +33,6 @@ public class ItemController {
 
     @PostMapping
     public ItemResponseDto saveItem(@RequestHeader(SHARER_HEADER) long ownerId,
-                                    @Valid
                                     @RequestBody ItemDto item) {
         return itemService.saveItem(ownerId, item);
     }
@@ -57,11 +47,9 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemResponseDto> getItemBySearch(
             @RequestHeader(SHARER_HEADER) Long userId,
-            @RequestParam String text,
-            @RequestParam(name = "from", required = false, defaultValue = "0")
-            @Min(value = 0, message = MESSAGE_FOR_INDEX) Integer index,
-            @RequestParam(name = "size", required = false, defaultValue = "20")
-            @Min(value = 1, message = MESSAGE_FOR_SIZE) Integer size) {
+            @RequestParam(name = "text") String text,
+            @RequestParam(name = "from") Integer index,
+            @RequestParam(name = "size") Integer size) {
         return itemService.getItemBySearch(text, userId, index, size);
     }
 
@@ -69,7 +57,7 @@ public class ItemController {
     public CommentResponseDto publicCommentToItem(
             @PathVariable Long itemId,
             @RequestHeader(SHARER_HEADER) Long userId,
-            @Valid @RequestBody CommentDto dto) {
+            @RequestBody CommentDto dto) {
         return itemService.addComment(itemId, userId, dto);
     }
 }
