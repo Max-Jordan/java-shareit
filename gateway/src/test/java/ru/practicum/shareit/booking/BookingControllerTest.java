@@ -62,18 +62,19 @@ class BookingControllerTest {
     @Test
     void bookItem_shouldReturnValidateException() throws Exception {
         mvc.perform(post("/bookings")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(HEADER, 1)
-                .content(mapper.writeValueAsString(new BookItemRequestDto(1,
-                        LocalDateTime.of(2000, 10, 10, 10, 10, 10),
-                        LocalDateTime.now()))))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HEADER, 1)
+                        .content(mapper.writeValueAsString(new BookItemRequestDto(1,
+                                LocalDateTime.of(2000, 10, 10, 10, 10, 10),
+                                LocalDateTime.now()))))
                 .andExpect(status().is4xxClientError());
     }
+
     @Test
-    void getBookingsByOwner() throws Exception{
+    void getBookingsByOwner() throws Exception {
         mvc.perform(get("/bookings/owner")
-                .param(FROM, "1")
-                .param(SIZE, "1"))
+                        .param(FROM, "1")
+                        .param(SIZE, "1"))
                 .andExpect(status().is4xxClientError());
     }
 }
